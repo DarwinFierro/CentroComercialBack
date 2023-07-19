@@ -9,6 +9,7 @@ class Usuario extends Model
 {
     use HasFactory;
     public $timestamps = false;
+    protected $primaryKey = 'usu_id';
     protected $fillable = [
         'usu_nombre',
         'usu_apellido',
@@ -19,19 +20,24 @@ class Usuario extends Model
         'rol_id',
         'est_id'
     ];
-    public function tipoDocumento(){
-        return $this->belongsTo(TipoDocumento::class, 'tid_id');
+
+    protected $hidden = [
+        'tid_id',
+        'rol_id',
+        'est_id'
+    ];
+    public function tipoDocumento()
+    {
+        return $this->belongsTo(TipoDocumento::class, 'tid_id', 'tid_id');
     }
 
-    public function rol(){
-        return $this->belongsTo(Rol::class, 'rol_id');
+    public function rol()
+    {
+        return $this->belongsTo(Rol::class, 'rol_id', 'rol_id');
     }
 
-    public function estado(){
-        return $this->belongsTo(Estado::class, 'est_id');
-    }
-
-    public function local(){
-        return $this->hasMany(Local::class, 'loc_id');
+    public function estado()
+    {
+        return $this->belongsTo(Estado::class, 'est_id', 'est_id');
     }
 }
