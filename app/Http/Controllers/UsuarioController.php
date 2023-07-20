@@ -34,9 +34,9 @@ class UsuarioController extends Controller
             $usuario->usu_documento = $request->usu_documento;
             $usuario->usu_email = $request->usu_email;
             $usuario->usu_password = $request->usu_password;
-            $usuario->tipo_documento_id = $request->tipo_documento['tid_id'];
+            $usuario->tid_id = $request->tipo_documento['tid_id'];
             $usuario->rol_id = $request->rol['rol_id'];
-            $usuario->estado_id = $request->estado['est_id'];
+            $usuario->est_id = $request->estado['est_id'];
             $usuario->save();
 
             $usuario->load(['tipoDocumento', 'rol', 'estado']);
