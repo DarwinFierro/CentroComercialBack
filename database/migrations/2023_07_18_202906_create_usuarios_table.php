@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
@@ -35,6 +36,11 @@ return new class extends Migration {
                 ->on('estados')
                 ->onDelete('cascade');
         });
+
+        DB::table('usuarios')->insert([
+            ['usu_nombre' => 'jhon', 'usu_apellido' => 'doe', 'usu_email'=>'johndoe@example.com', 
+            'usu_documento'=> '123456789', 'usu_password' => '123', 'tid_id'=>'1', 'rol_id'=>1, 'est_id'=>1]
+        ]);
     }
 
     /**
