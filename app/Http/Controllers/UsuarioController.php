@@ -40,34 +40,15 @@ class UsuarioController extends Controller
     public function store(Request $request)
     {
         try {
-            $usuarioData = $request->only([
-                'usu_nombre',
-                'usu_apellido',
-                'usu_documento',
-                'usu_email',
-                'usu_password',
-            ]);
-
-            $tipoDocumentoData = $request->input('tipo_documento', []);
-            $rolData = $request->input('rol', []);
-            $estadoData = $request->input('estado', []);
-
-            $tipoDocumento = TipoDocumento::firstOrCreate([
-                'tid_id' => $tipoDocumentoData['tid_id'],
-            ], $tipoDocumentoData);
-
-            $rol = Rol::firstOrCreate([
-                'rol_id' => $rolData['rol_id'],
-            ], $rolData);
-
-            $estado = Estado::firstOrCreate([
-                'est_id' => $estadoData['est_id'],
-            ], $estadoData);
-
-            $usuario = new Usuario($usuarioData);
-            $usuario->tipoDocumento()->associate($tipoDocumento);
-            $usuario->rol()->associate($rol);
-            $usuario->estado()->associate($estado);
+            $usuario = new Usuario();
+            $usuario->usu_nombre = $request->usu_nombre;
+            $usuario->usu_apellido = $request->usu_apellido;
+            $usuario->usu_documento = $request->usu_documento;
+            $usuario->usu_email = $request->usu_email;
+            $usuario->usu_password = $request->usu_password;
+            $usuario->tipo_documento_id = $request->tipo_documento['tid_id'];
+            $usuario->rol_id = $request->rol['rol_id'];
+            $usuario->estado_id = $request->estado['est_id'];
             $usuario->save();
 
             $usuario->load(['tipoDocumento', 'rol', 'estado']);

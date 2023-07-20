@@ -26,34 +26,13 @@ class LocalController extends Controller
     public function store(Request $request)
     {
         try {
-            $localData = $request->only([
-                'loc_nombre',
-                'loc_telefono',
-            ]);
-
-            $usuarioData = $request->input('usuario', []);
-            $estadoData = $request->input('estado', []);
-            $comercioData = $request->input('comercio', []);
-
-            $usuario = Usuario::firstOrCreate([
-                'usu_id' => $usuarioData['usu_id'],
-            ], $usuarioData);
-
-            $estado = Estado::firstOrCreate([
-                'est_id' => $estadoData['est_id'],
-            ], $estadoData);
-
-            $comercio = Comercio::firstOrCreate([
-                'com_id' => $comercioData['com_id'],
-            ], $comercioData);
-
-            $local = new Local($localData);
-            $local->usuario()->associate($usuario);
-            $local->estado()->associate($estado);
-            $local->comercio()->associate($comercio);
+            $local = new Local();
+            $local->loc_nombre = $request->loc_nombre;
+            $local->loc_telefono = $request->loc_telefono;
+            $local->usu_id = $request->usuario['usu_id'];
+            $local->est_id = $request->estado['est_id'];
+            $local->com_id = $request->comercio['com_id'];
             $local->save();
-
-            $local->load(['usuario', 'estado', 'comercio']);
 
             return response()->json(['message' => 'Local creado exitosamente', 'local' => $local], 201);
         } catch (\Exception $e) {
