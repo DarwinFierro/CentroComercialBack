@@ -35,6 +35,7 @@ Route::post('/usuario', [UsuarioController::class, 'store']);
 Route::get('/usuario/local', [UsuarioController::class, 'local']);
 Route::get('/usuario/{id}', [UsuarioController::class, 'show']);
 Route::put('/usuario/{id}', [UsuarioController::class, 'update']);
+Route::delete('/usuario/{id}', [UsuarioController::class, 'delete']);
 /*TipoDocumento*/
 Route::get('/tipoDocumento', [TipoDocumentoController::class, 'index']);
 /*TipoComercio*/

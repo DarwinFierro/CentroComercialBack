@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Estado;
 use App\Models\Usuario;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -10,7 +11,9 @@ class UsuarioController extends Controller
 {
     public function index()
     {
-        return Usuario::with(['tipoDocumento', 'rol', 'estado'])->get();
+        return Usuario::whereHas('estado', function ($query) {
+            $query->where('est_name', '<>', 'inactivo');
+        })->with(['tipoDocumento', 'rol', 'estado'])->get();
     }
 
     public function local()
@@ -68,12 +71,30 @@ class UsuarioController extends Controller
         }
     }
 
+    public function delete($id)
+    {
+        $usuario = Usuario::find($id);
+        if ($usuario) {
+            $estadoInactivo = Estado::where('est_name', 'inactivo')->first();
+            if ($estadoInactivo) {
+                $usuario->estado()->associate($estadoInactivo);
+                $usuario->save();
+                return response()->json(['mensaje' => 'Estado del Usuario cambiado a "inactivo"']);
+            }
+            return response()->json(['mensaje' => 'Estado "inactivo" no encontrado'], 404);
+
+        } else {
+            return response()->json(['mensaje' => 'Usuario no encontrado'], 404);
+        }
+
+    }
+
     public function login(Request $request)
     {
         $credentials = $request->only(['usu_email', 'usu_password']);
 
         $user = Usuario::join('rols', 'usuarios.rol_id', '=', 'rols.rol_id')
-            ->select('usuarios.usu_id','usuarios.usu_nombre', 'rols.rol_name')
+            ->select('usuarios.usu_id', 'usuarios.usu_nombre', 'rols.rol_name')
             ->where('usu_email', $credentials['usu_email'])
             ->where('usu_password', $credentials['usu_password'])
             ->first();

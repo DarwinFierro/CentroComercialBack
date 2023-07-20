@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Estado;
 use Illuminate\Http\Request;
 use App\Models\Local;
 
@@ -60,7 +61,7 @@ class LocalController extends Controller
         if (!$local) {
             return response()->json(['mensaje' => 'Local no encontrado'], 404);
         }
-        $estadoInactivo = $local->estado->where('est_name', 'inactivo')->first();
+        $estadoInactivo = Estado::where('est_name', 'inactivo')->first();
         if (!$estadoInactivo) {
             return response()->json(['mensaje' => 'Estado "inactivo" no encontrado'], 404);
         }
