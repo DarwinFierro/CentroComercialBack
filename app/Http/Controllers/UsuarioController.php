@@ -2,9 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Estado;
-use App\Models\Rol;
-use App\Models\TipoDocumento;
 use App\Models\Usuario;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;

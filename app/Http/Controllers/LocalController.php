@@ -4,10 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Local;
-use App\Models\Usuario;
-use App\Models\Estado;
-use App\Models\Comercio;
-use Illuminate\Support\Facades\Cache;
 
 class LocalController extends Controller
 {
@@ -60,7 +56,7 @@ class LocalController extends Controller
 
     public function delete($id)
     {
-        $local = Local::with('estado')->find($id);
+        $local = Local::find($id);
         if (!$local) {
             return response()->json(['mensaje' => 'Local no encontrado'], 404);
         }
