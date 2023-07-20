@@ -8,7 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class Local extends Model
 {
     use HasFactory;
-    public $timestamps = false;
+    public $timestamps = true;
+    protected $primaryKey = 'loc_id';
     protected $fillable = [
         'loc_nombre',
         'loc_telefono',
@@ -16,16 +17,22 @@ class Local extends Model
         'est_id',
         'com_id'
     ];
+    protected $hidden = [
+        'usu_id',
+        'est_id',
+        'com_id'
+    ];
+
     public function usuario(){
-        return $this->belongsTo(Usuario::class, 'usu_id');
+        return $this->belongsTo(Usuario::class, 'usu_id', 'usu_id');
     }
 
     public function estado(){
-        return $this->belongsTo(Estado::class, 'est_id');
+        return $this->belongsTo(Estado::class, 'est_id', 'est_id');
     }
 
     public function comercio(){
-        return $this->belongsTo(Comercio::class, 'com_id');
+        return $this->belongsTo(Comercio::class, 'com_id', 'com_id');
     }
 
     

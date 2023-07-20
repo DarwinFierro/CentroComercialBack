@@ -14,6 +14,6 @@ class TipoComercio extends Model
     ];
 
     public function usuarios(){
-        return $this->hasMany(Usuario::class, 'tic_id');
+        return $this->hasMany(Usuario::class, 'tic_id', 'tic_id');
     }
 }

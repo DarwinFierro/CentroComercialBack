@@ -20,6 +20,14 @@ class UsuarioController extends Controller
         return response()->json($usuarios);
     }
 
+    public function local()
+    {
+        $usuarios = Usuario::whereHas('rol', function ($query) {
+            $query->where('rol_name', 'LOCAL_OWNER');
+        })->with(['tipoDocumento', 'rol', 'estado'])->get();
+        return $usuarios;
+    }
+
     public function show($id)
     {
         $usuario = Cache::remember('usuario_' . $id, 60, function () use ($id) {
@@ -32,7 +40,6 @@ class UsuarioController extends Controller
     public function store(Request $request)
     {
         try {
-            // Extraer los datos de usuario del request
             $usuarioData = $request->only([
                 'usu_nombre',
                 'usu_apellido',
@@ -41,12 +48,10 @@ class UsuarioController extends Controller
                 'usu_password',
             ]);
 
-            // Extraer los datos de las relaciones tipo_documento, rol y estado
             $tipoDocumentoData = $request->input('tipo_documento', []);
             $rolData = $request->input('rol', []);
             $estadoData = $request->input('estado', []);
 
-            // Buscar o crear las instancias de las relaciones tipo_documento, rol y estado
             $tipoDocumento = TipoDocumento::firstOrCreate([
                 'tid_id' => $tipoDocumentoData['tid_id'],
             ], $tipoDocumentoData);
@@ -59,14 +64,12 @@ class UsuarioController extends Controller
                 'est_id' => $estadoData['est_id'],
             ], $estadoData);
 
-            // Crear el nuevo usuario con las relaciones establecidas
             $usuario = new Usuario($usuarioData);
             $usuario->tipoDocumento()->associate($tipoDocumento);
             $usuario->rol()->associate($rol);
             $usuario->estado()->associate($estado);
             $usuario->save();
 
-            // Carga las relaciones antes de devolver la respuesta
             $usuario->load(['tipoDocumento', 'rol', 'estado']);
 
             return response()->json(['message' => 'Usuario creado exitosamente', 'usuario' => $usuario], 201);
@@ -93,6 +96,22 @@ class UsuarioController extends Controller
             return response()->json(['message' => 'Usuario actualizado exitosamente'], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Error al actualizar el usuario', 'error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function login(Request $request)
+    {
+        $credentials = $request->only(['usu_email', 'usu_password']);
+
+        $user = Usuario::join('rols', 'usuarios.rol_id', '=', 'rols.rol_id')
+            ->select('usuarios.usu_id','usuarios.usu_nombre', 'rols.rol_name')
+            ->where('usu_email', $credentials['usu_email'])
+            ->where('usu_password', $credentials['usu_password'])
+            ->first();
+        if ($user) {
+            return response()->json(['user' => $user], 200);
+        } else {
+            return response()->json(['message' => 'Credenciales inválidas'], 401);
         }
     }
 }

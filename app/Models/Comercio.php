@@ -13,6 +13,9 @@ class Comercio extends Model
         'com_nombre',
         'tic_id'
     ];
+    protected $hidden = [
+        'tic_id'
+    ];
     public function tipoComercio()
     {
         return $this->belongsTo(TipoComercio::class, 'tic_id', 'tic_id');
