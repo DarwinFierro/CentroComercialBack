@@ -10,28 +10,19 @@ class UsuarioController extends Controller
 {
     public function index()
     {
-        $usuarios = Cache::remember('usuarios', 60, function () {
-            return Usuario::with(['tipoDocumento', 'rol', 'estado'])->get();
-        });
-
-        return response()->json($usuarios);
+        return Usuario::with(['tipoDocumento', 'rol', 'estado'])->get();
     }
 
     public function local()
     {
-        $usuarios = Usuario::whereHas('rol', function ($query) {
+        return Usuario::whereHas('rol', function ($query) {
             $query->where('rol_name', 'LOCAL_OWNER');
         })->with(['tipoDocumento', 'rol', 'estado'])->get();
-        return $usuarios;
     }
 
     public function show($id)
     {
-        $usuario = Cache::remember('usuario_' . $id, 60, function () use ($id) {
-            return Usuario::with(['tipoDocumento', 'rol', 'estado'])->find($id);
-        });
-
-        return response()->json($usuario);
+        return Usuario::with(['tipoDocumento', 'rol', 'estado'])->find($id);
     }
 
     public function store(Request $request)
