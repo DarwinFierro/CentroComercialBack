@@ -20,7 +20,7 @@ return new class extends Migration
         DB::table('rols')->insert([
             ['rol_name' => 'SUPER_OWNER'],
             ['rol_name' => 'LOCAL_OWNER'],
-            ['rol_name' => 'en WATCHMAN'],
+            ['rol_name' => 'WATCHMAN'],
         ]);
     }
 
