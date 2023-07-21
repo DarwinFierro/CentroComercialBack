@@ -58,16 +58,18 @@ class LocalController extends Controller
     public function delete($id)
     {
         $local = Local::find($id);
-        if (!$local) {
+        if ($local) {
+            $estadoInactivo = Estado::where('est_name', 'inactivo')->first();
+            if ($estadoInactivo) {
+                $local->estado()->associate($estadoInactivo);
+            $local->save();
+            $local->touch();
+            return response()->json(['mensaje' => 'Estado del local cambiado a "inactivo"']);
+            }else {
+                return response()->json(['mensaje' => 'Estado "inactivo" no encontrado'], 404);
+            }
+        } else {
             return response()->json(['mensaje' => 'Local no encontrado'], 404);
         }
-        $estadoInactivo = Estado::where('est_name', 'inactivo')->first();
-        if (!$estadoInactivo) {
-            return response()->json(['mensaje' => 'Estado "inactivo" no encontrado'], 404);
-        }
-        $local->estado()->associate($estadoInactivo);
-        $local->save();
-        $local->touch();
-        return response()->json(['mensaje' => 'Estado del local cambiado a "inactivo"']);
     }
 }
